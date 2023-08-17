@@ -1,0 +1,78 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+void printLinkedList(Node* head) {
+    Node* current = head;
+    while (current != nullptr) {
+        cout << current->data << " ";
+        current = current->next;
+    }
+    cout << endl;
+}
+
+Node* oddEvenGrouping(Node* head) {
+    if (!head || !head->next) {
+        return head;
+    }
+
+    Node* odd = head;
+    Node* even = head->next;
+    Node* evenStart = even;
+
+    while (even && even->next) {
+        odd->next = even->next;
+        odd = odd->next;
+        even->next = odd->next;
+        even = even->next;
+    }
+
+    odd->next = evenStart;
+
+    return head;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    Node* head = nullptr;
+    Node* tail = nullptr;
+
+    for (int i = 1; i <= n; ++i) {
+        int val;
+        cin >> val;
+
+        Node* newNode = new Node(val);
+        if (!head) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = tail->next;
+        }
+    }
+
+    cout << "Original List: ";
+    printLinkedList(head);
+
+    head = oddEvenGrouping(head);
+
+    cout << "Modified List: ";
+    printLinkedList(head);
+
+    // Clean up memory
+    while (head) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+
+    return 0;
+}
