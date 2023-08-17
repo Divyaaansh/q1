@@ -1,0 +1,116 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+Node* sortLinkedList(Node* head) {
+    if (!head || !head->next) {
+        return head;
+    }
+
+    Node* zeroStart = nullptr, *zeroEnd = nullptr;
+    Node* oneStart = nullptr, *oneEnd = nullptr;
+    Node* twoStart = nullptr, *twoEnd = nullptr;
+
+    Node* current = head;
+
+    while (current != nullptr) {
+        if (current->data == 0) {
+            if (!zeroStart) {
+                zeroStart = zeroEnd = current;
+            } else {
+                zeroEnd->next = current;
+                zeroEnd = zeroEnd->next;
+            }
+        } else if (current->data == 1) {
+            if (!oneStart) {
+                oneStart = oneEnd = current;
+            } else {
+                oneEnd->next = current;
+                oneEnd = oneEnd->next;
+            }
+        } else {
+            if (!twoStart) {
+                twoStart = twoEnd = current;
+            } else {
+                twoEnd->next = current;
+                twoEnd = twoEnd->next;
+            }
+        }
+
+        current = current->next;
+    }
+
+    if (zeroEnd) zeroEnd->next = nullptr;
+    if (oneEnd) oneEnd->next = nullptr;
+    if (twoEnd) twoEnd->next = nullptr;
+
+    if (zeroStart) {
+        head = zeroStart;
+        if (oneStart) {
+            zeroEnd->next = oneStart;
+            if (twoStart) {
+                oneEnd->next = twoStart;
+            }
+        } else if (twoStart) {
+            zeroEnd->next = twoStart;
+        }
+    } else if (oneStart) {
+        head = oneStart;
+        if (twoStart) {
+            oneEnd->next = twoStart;
+        }
+    } else if (twoStart) {
+        head = twoStart;
+    }
+
+    return head;
+}
+
+void printLinkedList(Node* head) {
+    Node* current = head;
+    while (current != nullptr) {
+        cout << current->data << " ";
+        current = current->next;
+    }
+    cout << endl;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    Node* head = nullptr;
+    Node* tail = nullptr;
+
+    for (int i = 0; i < n; ++i) {
+        int val;
+        cin >> val;
+
+        Node* newNode = new Node(val);
+        if (!head) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = tail->next;
+        }
+    }
+
+    head = sortLinkedList(head);
+    printLinkedList(head);
+
+    // Clean up memory
+    while (head) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+
+    return 0;
+}
