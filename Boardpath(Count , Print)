@@ -1,0 +1,64 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void printPathsHelper(int N, int M, int current, vector<int>& path) {
+    if (current == N) {
+        for (size_t i = 0; i < path.size(); ++i) {
+            cout << path[i];
+            if (i != path.size() - 1) {
+                cout << "";
+            }
+        }
+        cout << " ";
+        return;
+    }
+
+    for (int i = 1; i <= M; ++i) {
+        if (current + i <= N) {
+            path.push_back(i);
+            printPathsHelper(N, M, current + i, path);
+            path.pop_back();
+        }
+    }
+}
+
+int countPathsHelper(int N, int M, int current) {
+    if (current == N) {
+        return 1;
+    }
+
+    int count = 0;
+    for (int i = 1; i <= M; ++i) {
+        if (current + i <= N) {
+            count += countPathsHelper(N, M, current + i);
+        }
+    }
+
+    return count;
+}
+
+void printAllPaths(int N, int M) {
+    vector<int> path;
+    printPathsHelper(N, M, 0, path);
+}
+
+int countAllPaths(int N, int M) {
+    return countPathsHelper(N, M, 0);
+}
+
+int main() {
+    int N, M;
+    
+    cin >> N;
+   
+    cin >> M;
+
+    printAllPaths(N, M);
+
+    int numPaths = countAllPaths(N, M);
+    cout <<endl << numPaths;
+
+    return 0;
+}
